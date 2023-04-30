@@ -1,43 +1,51 @@
 import React, { useContext } from 'react';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import logo from '../../../assets/brand/logo.png'
+import moment from 'moment';
+import { Button, Container } from 'react-bootstrap';
+import Marquee from "react-fast-marquee";
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthProvider/AuthProvider';
 
 const Header = () => {
 
-  const user = useContext(AuthContext)
+    const { user, logOut } = useContext(AuthContext);
+
+    const handleLogOut = () => {
+        logOut()
+            .then(() => { })
+            .catch(error => console.error(error))
+    }
+
     return (
-        <Navbar collapseOnSelect className='mb-4' expand="lg" bg="light" variant="light">
-        <Container>
-          <Navbar.Brand href="/">The Daily Star</Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#features">Features</Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
-              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-            <Nav>
-              <Nav.Link href="#deets"> {user?.displayName} </Nav.Link>
-              <Nav.Link eventKey={2} href="#memes">
-                Dank memes
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
+        <Container className='mt-4'>
+            <div className="text-center">
+                <img src={logo} alt="" />
+                <p className='text-secondary'><small>Journalism Without Fear or Favor</small></p>
+                <p>{moment().format("dddd, MMMM D, YYYY")}</p>
+            </div>
+            <div className='d-flex'>
+                <Button variant="danger">Latest</Button>
+                <Marquee className='text-danger' speed={50}>
+                Joe Biden announces $3 billion in Ukraine weapons aid...... George Russell wears $110 Daniel Ricciardo merchandise to Zandvoort paddock ahead of Dutch GP....
+                </Marquee>
+            </div>
+            <div>
+
+            {
+                                user?.uid ?
+                                    <>
+                                        <span>{user?.displayName}</span>
+                                        <Button variant="light" onClick={handleLogOut}>Log out</Button>
+                                    </>
+                                    :
+                                    <>
+                                        <Link to='/login'>Login</Link>
+                                        <Link to='/register'>Register</Link>
+                                    </>
+                            }
+            </div>
+            
         </Container>
-      </Navbar>
     );
 };
 
